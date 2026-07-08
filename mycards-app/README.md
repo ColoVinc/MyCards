@@ -84,11 +84,17 @@ npm run db:studio     # UI di ispezione del database
 
 node scripts/apply-schema.mjs    # applica db/init.sql + ALTER additivi
 npx tsx scripts/sync-catalog.ts  # importa TUTTO il catalogo (set + carte)
+node scripts/set-logos.mjs       # assegna i loghi locali (public/loghi-collezioni/) ai set
 ```
 
 Il catalogo si popola in modo **pigro** (un set viene importato quando lo si apre)
 e si aggiorna da solo con un TTL di 7 giorni. Lo script `sync-catalog.ts`
 scarica in anticipo tutte le espansioni e carte (utile per la ricerca globale).
+
+I loghi delle espansioni non sono forniti da OPTCG: sono stati recuperati a mano
+e vivono in `public/loghi-collezioni/`. `set-logos.mjs` è idempotente e non
+viene mai sovrascritto dalla sync automatica (che tocca solo i set nuovi):
+rilancialo se aggiungi un file o ricrei il DB. Manca ancora il logo di EB-01.
 
 ## Struttura del progetto
 
