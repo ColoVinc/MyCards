@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap');
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * MyCards design system — derived from the Zenith Gallery spec:
+ * electric-blue primary, impact red, victory gold, cool neutral surfaces.
+ * Sora for headlines, Hanken Grotesk for body, Space Grotesk for labels/stats.
+ */
+:root {
+  --background: #f7fafd;
+  --foreground: #181c1e;
+  --card: #ffffff;
+  --card-foreground: #181c1e;
+  --popover: #ffffff;
+  --popover-foreground: #181c1e;
+  --primary: #0041c8;
+  --primary-bright: #0055ff;
+  --primary-foreground: #ffffff;
+  --secondary: #ebeef1;
+  --secondary-foreground: #181c1e;
+  --muted: #f1f4f7;
+  --muted-foreground: #434656;
+  --accent: #e5e8eb;
+  --accent-foreground: #181c1e;
+  --destructive: #ba1a1a;
+  --destructive-foreground: #ffffff;
+  --border: #c3c5d9;
+  --input: #c3c5d9;
+  --ring: #0055ff;
+  --radius: 0.5rem;
+
+  --impact: #b02700;
+  --impact-bright: #dc3300;
+  --gold: #705d00;
+  --gold-bright: #caa900;
+  --outline-soft: #737688;
+  --surface-dim: #e0e3e6;
+  --ink: #181c1e;
+}
+
+@theme inline {
+  --font-display: 'Sora', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-label: 'Space Grotesk', ui-monospace, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-bright: var(--primary-bright);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-impact: var(--impact);
+  --color-impact-bright: var(--impact-bright);
+  --color-gold: var(--gold);
+  --color-gold-bright: var(--gold-bright);
+  --color-outline-soft: var(--outline-soft);
+  --color-surface-dim: var(--surface-dim);
+  --color-ink: var(--ink);
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  background-color: var(--background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Architectural headline default */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* Technical label: Space Grotesk caps, used for stats/metadata */
+.label-caps {
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Glassmorphism overlay per design system: 20px blur, 70% white */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* "Active lift": diffused ambient shadow tinted with primary */
+.card-lift {
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 18px 40px rgba(0, 65, 200, 0.18),
+    0 4px 12px rgba(24, 28, 30, 0.08);
+}
+
+/* Gloss gradient overlay that activates on hover (card containers) */
+.card-gloss {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-gloss::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.22) 48%,
+    rgba(255, 255, 255, 0.05) 55%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+
+.card-gloss:hover::after {
+  opacity: 1;
+}
+
+.rise-in {
+  animation: rise-in 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+}

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="light" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>La Mia Collezione | DUEL VAULT</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=Hanken+Grotesk:wght@400;500;600&amp;family=Space+Grotesk:wght@500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@100..900&amp;family=Sora:wght@100..900&amp;family=Space+Grotesk:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ba1a1a",
+                    "outline-variant": "#c3c5d9",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#e0e3e6",
+                    "on-secondary-fixed": "#3c0700",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#b02700",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#2d3133",
+                    "inverse-on-surface": "#eef1f4",
+                    "surface-container-high": "#e5e8eb",
+                    "tertiary-fixed": "#ffe170",
+                    "outline": "#737688",
+                    "inverse-primary": "#b6c4ff",
+                    "on-error": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-background": "#181c1e",
+                    "on-tertiary-fixed": "#221b00",
+                    "primary": "#0041c8",
+                    "tertiary-container": "#caa900",
+                    "surface-bright": "#f7fafd",
+                    "primary-container": "#0055ff",
+                    "on-secondary-container": "#fffbff",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "on-secondary-fixed-variant": "#8a1d00",
+                    "background": "#f7fafd",
+                    "on-primary-fixed": "#001551",
+                    "surface-container-highest": "#e0e3e6",
+                    "on-primary-fixed-variant": "#0039b3",
+                    "surface-dim": "#d7dadd",
+                    "tertiary": "#705d00",
+                    "on-tertiary-fixed-variant": "#544600",
+                    "surface-tint": "#004dea",
+                    "secondary-fixed": "#ffdad2",
+                    "secondary-fixed-dim": "#ffb4a2",
+                    "surface-container": "#ebeef1",
+                    "on-tertiary-container": "#4c3e00",
+                    "surface": "#f7fafd",
+                    "on-surface": "#181c1e",
+                    "on-surface-variant": "#434656",
+                    "tertiary-fixed-dim": "#e9c400",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f1f4f7",
+                    "primary-fixed": "#dce1ff",
+                    "secondary-container": "#dc3300",
+                    "on-primary-container": "#e3e6ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "80px",
+                    "gutter": "16px",
+                    "sm": "12px",
+                    "base": "8px",
+                    "container-max": "1280px",
+                    "lg": "48px",
+                    "md": "24px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Hanken Grotesk"],
+                    "label-caps": ["Space Grotesk"],
+                    "display-lg": ["Sora"],
+                    "headline-md": ["Sora"],
+                    "headline-lg": ["Sora"],
+                    "headline-lg-mobile": ["Sora"],
+                    "body-md": ["Hanken Grotesk"],
+                    "stats-number": ["Space Grotesk"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "stats-number": ["20px", {"lineHeight": "1", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .card-gloss {
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.1) 100%);
+            pointer-events: none;
+        }
+        .card-container:hover .card-gloss {
+            opacity: 0.8;
+            transform: translateY(-10%);
+            transition: all 0.5s ease;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f7fafd;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-xl border-b border-outline-variant/30 flex items-center justify-between px-gutter h-16">
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined text-primary text-headline-md" data-icon="style">style</span>
+<h1 class="font-display-lg text-headline-md tracking-tighter text-primary">DUEL VAULT</h1>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden md:flex items-center gap-md">
+<a class="font-label-caps text-primary" href="#">Collection</a>
+<a class="font-label-caps text-on-surface-variant hover:opacity-80 transition-opacity" href="#">Add Card</a>
+<a class="font-label-caps text-on-surface-variant hover:opacity-80 transition-opacity" href="#">Market</a>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border border-outline-variant/20">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNxzYOQ5ZK4e9gybi-gDE-YeuGbHha6jvwIthPzV4YY2XH9bNXrXJUoL1H0f_MZZnXm9bbnZ9b0IqbYSUI7cJcA47cwlq9TXxpLzra4vLr0YnxX9vfaNvp6XulpVC8NnGAoBRkwHE8mCIPoW27g1eaZL_YWkLMOwqWFhmhNQq9W26dEhSa6VLVLqs9TM6JEQDoGC0XdUofovg9S5i6uBp19Do2pSzmodaKC1-_WJtXCtd4tOGYVDo2qDhjIirVTOQJdyja3NcufQE-"/>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-gutter max-w-container-max mx-auto">
+<!-- Header Section -->
+<div class="mb-lg space-y-md">
+<h2 class="font-headline-lg text-headline-lg md:text-display-lg text-on-surface">La Mia Collezione</h2>
+<!-- Search & Filter Bar -->
+<div class="flex flex-col md:flex-row gap-md w-full">
+<div class="relative flex-grow">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 h-14 bg-surface-container-lowest border-0 border-b-2 border-outline-variant/30 focus:border-primary focus:ring-0 transition-all rounded-t-lg font-body-md" placeholder="Cerca nella tua collezione..." type="text"/>
+</div>
+<div class="relative min-w-[200px]">
+<select class="w-full h-14 px-4 bg-surface-container-lowest border-0 border-b-2 border-outline-variant/30 focus:border-primary focus:ring-0 appearance-none rounded-t-lg font-body-md text-on-surface-variant cursor-pointer">
+<option value="all">Tutti i Giochi</option>
+<option value="ygo">Yu-Gi-Oh!</option>
+<option value="pkm">Pokémon</option>
+<option value="mtg">Magic: The Gathering</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-outline" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid / Cards Display -->
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-md">
+<!-- Card Item 1 -->
+<div class="group relative card-container aspect-[2.5/3.5] bg-surface-container rounded-lg overflow-hidden border border-outline-variant/20 shadow-sm hover:shadow-primary/10 transition-all duration-300">
+<div class="absolute top-2 right-2 z-10">
+<span class="bg-primary text-on-primary font-label-caps px-2 py-1 rounded-full text-[10px] uppercase shadow-md">Mythic</span>
+</div>
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A macro photography shot of a legendary dragon trading card with golden foil edges and intricate holographic details. The lighting is dramatic, highlighting the crystalline textures of the dragon's scales. The background is a clean, minimalist studio setting with deep blue and gold accents, reflecting a high-end collector's aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCp4q7P7moQMfNZMLG7ryvmgItdLstwLLXQZ15f3qo_058y9Dl3NyFP1pl_A1lYqf8tcCNm00wsqsLWaxEnU-lKDE9Y5psVJmGzKSfbcoNAFyayQ7wdb8RSUvEJ3uSa_9NW8KZ4lp5WVLHT1WwhK1U-XSqyx0NoMxbFLLXSLqrhq57D8GL7Eo2srVTHbGaE0YZyQK8MuPlkzb3wtjKUjyT6FW6LaGKq6Ntt01ArGjKk3F9J1QaWH4LAhY5sp6q52d4zWLPA-NgDL3OO"/>
+<div class="card-gloss absolute inset-0 opacity-0 transition-opacity"></div>
+<div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-8">
+<p class="font-headline-md text-sm text-white truncate">Blue-Eyes White Dragon</p>
+<p class="font-label-caps text-[10px] text-primary-fixed/80">Yu-Gi-Oh!</p>
+</div>
+<button aria-label="Delete" class="absolute top-2 left-2 w-8 h-8 rounded-full bg-error/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-90">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+<!-- Card Item 2 -->
+<div class="group relative card-container aspect-[2.5/3.5] bg-surface-container rounded-lg overflow-hidden border border-outline-variant/20 shadow-sm transition-all duration-300">
+<div class="absolute top-2 right-2 z-10">
+<span class="bg-secondary text-white font-label-caps px-2 py-1 rounded-full text-[10px] uppercase shadow-md">Rare</span>
+</div>
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A vivid, colorful trading card featuring an electric-type pocket monster in a dynamic forest battle scene. The artwork is stylized in a modern anime aesthetic with bright saturation and soft bloom effects. The card itself sits on a sleek, white glass surface reflecting the vibrant reds and yellows of the art, emphasizing a clean and organized digital gallery vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9uf0Ux39SBBTxWXqxDcw5vVt7fk1LiWRmUTVdWSJaju5D-Tc9qos6MtcqnlEHzbcOlQHbikNhX1W0kR2EODTtq0L2zWaHafFqvBCb2UXACJeiECK0uUkFWtkgeF2YM6fBOypVcYYQ_uKfQs4tmzdYxePF9xZn74odbFcQp5BE9tHH5TDruQAunyLIFJo9vlc1TyZvZPBn726A4A88mKd3llnthSuEN-wrAd_yIwTTQqlV-EaOEfutRkmsuL0V7_SQoHkQ5AW4v8ve"/>
+<div class="card-gloss absolute inset-0 opacity-0 transition-opacity"></div>
+<div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-8">
+<p class="font-headline-md text-sm text-white truncate">Charizard VMAX</p>
+<p class="font-label-caps text-[10px] text-primary-fixed/80">Pokémon</p>
+</div>
+<button aria-label="Delete" class="absolute top-2 left-2 w-8 h-8 rounded-full bg-error/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-90">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+<!-- Card Item 3 -->
+<div class="group relative card-container aspect-[2.5/3.5] bg-surface-container rounded-lg overflow-hidden border border-outline-variant/20 shadow-sm transition-all duration-300">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A high-fantasy trading card depicting a powerful sorcerer standing amidst a swirl of cosmic magic and stardust. The style is painterly and epic, using a palette of deep purples and electric blues. The image is presented as part of a professional digital collection interface, with bright, airy lighting and sharp linear edges that denote a modern, professional platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIxMWX2ziTDg5-qrWZ8F-j3q_wsbLozD7dExDn5HjRnrymhDpTGjr7GCOWM8dJWr3nKtu8V-xja8byktlPDoo1DKECARXotvohPiGjjqYoHiNiT8mZU4i-nOzaEXTgR_vXEhQj0VfuY050HcKrp4S1Vmuu0KAVY61zZoj1WoW_UJ7s8NdL99hZ-PZbjIvMviEfCsCB-8cLVWZ0lQZv_Wjq3pR8nC4jJ9c1jI0E8H1t3-R0hnCn-c-tUVuFsdP_qXtiVHI_eEtDK3dI"/>
+<div class="card-gloss absolute inset-0 opacity-0 transition-opacity"></div>
+<div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-8">
+<p class="font-headline-md text-sm text-white truncate">Jace, the Mind Sculptor</p>
+<p class="font-label-caps text-[10px] text-primary-fixed/80">Magic: The Gathering</p>
+</div>
+<button aria-label="Delete" class="absolute top-2 left-2 w-8 h-8 rounded-full bg-error/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-90">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+<!-- More placeholders to fill grid -->
+<div class="group relative card-container aspect-[2.5/3.5] bg-surface-container rounded-lg overflow-hidden border border-outline-variant/20 opacity-90 hover:opacity-100">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A collector's trading card featuring a mechanical robot warrior in a futuristic cityscape. The art style is crisp line-art with cel-shading, characteristic of modern Shonen battle themes. The scene is illuminated by neon city lights, with the card presented in a high-contrast, clean UI environment featuring soft white backgrounds and sharp primary blue accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYDJFX6VVyYMOPa5xMYsIasnDxXaG5EKVC6Ij-ppVaQomWzmv3MxwdZYftJTWkEUQoRrqmH4DbmKjaGxM8D5xxjN8WzRiFLwL1r5lFZloOtG2-2ZrGXUFliQ5PFpRHnYnUinXW5t_WfHDyoqs6TjVZX402RxDZy0fjIJCTpPPsnOOmcsw0l_sv9KAZ5KOybf8TPN-sWonunytEXnkGn76C3UjA-2xd0zUIl933iMa1bYgOAVVLU_ssauWzrjyjnW7Wv-FymKf77-2R"/>
+<div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-8">
+<p class="font-headline-md text-sm text-white truncate">Exodia the Forbidden</p>
+<p class="font-label-caps text-[10px] text-primary-fixed/80">Yu-Gi-Oh!</p>
+</div>
+<button class="absolute top-2 left-2 w-8 h-8 rounded-full bg-error/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-90">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+<div class="group relative card-container aspect-[2.5/3.5] bg-surface-container rounded-lg overflow-hidden border border-outline-variant/20 shadow-sm transition-all duration-300">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A stunning fantasy trading card showcasing a serene, glowing forest guardian. The lighting is ethereal and soft, focusing on pastel greens and vibrant pinks. The image captures the premium feel of a physical card in a digital space, with a subtle glassmorphic overlay for navigation elements and a crisp, white-dominated UI that allows the card artwork to be the main focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJUgbBly3SIG_CWWZe3-bbVNWSjcFttc59zEr95tJ0ml8H2N3bBHeJ-ftX2crYy_kOm3LlSt8cYIa7B2ecLtpCVkdDBydVCDFPrKZJhOayPx0byGjsGdAlkn2TTucw2EK5clZwX0gd2ZQ-lANu25e0vAiOozX2z-QVBNy9DcXHWd1BI5KsQ33rGg8SLSAVYf3TJ2uuOoILHZqcNf5s3LlcjbxirDZ1J3rhRUfZ40-K0euvX_w8bpMMsouIMviUbPFUgMCqWRVhd3Ti"/>
+<div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-8">
+<p class="font-headline-md text-sm text-white truncate">Celebi GX</p>
+<p class="font-label-caps text-[10px] text-primary-fixed/80">Pokémon</p>
+</div>
+<button class="absolute top-2 left-2 w-8 h-8 rounded-full bg-error/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-90">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+<div class="group relative card-container aspect-[2.5/3.5] bg-surface-container rounded-lg overflow-hidden border border-outline-variant/20 shadow-sm transition-all duration-300">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A dark and moody trading card featuring an ancient vampire lord in a gothic castle setting. The lighting is dim with dramatic red highlights on the vampire's armor. The overall visual style is professional and linear, emphasizing high contrast and clean edges within the card frame, presented against a minimalist gallery background of light gray and blue tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBH9hi-D94GEM6UpRXLd-HA1GXK3IF9_ENXC8nRBUNs6ipQXFuurz0ujIJZrZmUsJVTNqTy__Ifz1i9c1a29WWI1VngSGg8A0D3dHxUpRhAcvm25M2l0dabhNvi2YGRM7AhcJMp5fJGIERWaLyInquFDoAGYw95XCq8KyMTCU0E2nn3_7-cF9qEn1Y0IHwyROAymXnUw52KQWk-tw0pF8Cl3vqOsElreyAwX2uugjQvj2yzRh0S7LW0ENZZmvZJPCRVIEmOieblIhcz"/>
+<div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-8">
+<p class="font-headline-md text-sm text-white truncate">Sorin, Imperious Bloodlord</p>
+<p class="font-label-caps text-[10px] text-primary-fixed/80">Magic: The Gathering</p>
+</div>
+<button class="absolute top-2 left-2 w-8 h-8 rounded-full bg-error/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-90">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 bg-surface/70 backdrop-blur-xl border-t border-outline-variant/30 flex justify-around items-center h-20 px-4 pb-safe rounded-t-xl shadow-lg">
+<button class="flex flex-col items-center justify-center text-primary font-bold transition-transform duration-200 translate-y-[-2px]">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-label-caps text-label-caps mt-1">Collection</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-label-caps text-label-caps mt-1">Add Card</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-caps text-label-caps mt-1">Market</span>
+</button>
+</nav>
+<!-- Footer (Desktop) -->
+<footer class="hidden md:flex flex-col items-center py-md mt-xl w-full bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="flex gap-md mb-base">
+<a class="font-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Privacy</a>
+<a class="font-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Terms</a>
+<a class="font-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">API Docs</a>
+</div>
+<p class="font-body-md text-on-surface-variant opacity-60">© 2024 DUEL VAULT COLLECTOR SYSTEM</p>
+</footer>
+<!-- FAB (Floating Action Button) - Contextual -->
+<button class="fixed bottom-24 right-6 md:bottom-12 md:right-12 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 active:scale-95 z-40">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<script>
+        // Simple Interaction logic for deleting cards
+        document.querySelectorAll('button[aria-label="Delete"]').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const card = e.target.closest('.card-container');
+                card.style.transform = 'scale(0.8)';
+                card.style.opacity = '0';
+                setTimeout(() => {
+                    card.style.display = 'none';
+                }, 300);
+            });
+        });
+
+        // Search bar interaction
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('scale-[1.01]');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('scale-[1.01]');
+        });
+    </script>
+</body></html>
