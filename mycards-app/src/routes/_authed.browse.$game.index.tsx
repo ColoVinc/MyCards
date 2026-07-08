@@ -1,31 +1,25 @@
 ﻿import { Suspense, useState } from 'react'
 import { Link, createFileRoute, notFound } from '@tanstack/react-router'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { Construction, Layers } from 'lucide-react'
+import { Layers } from 'lucide-react'
 import { AppHeader } from '#/components/app-header'
 import { PAGE_SIZE, Pagination } from '#/components/ui/pagination'
 import { catalogSetsQueryOptions } from '#/features/catalog/queries'
 import { CATALOG_GAMES } from '#/features/catalog/server'
 import { COLLECTION_LABELS } from '#/features/cards/validation'
-import { COLLECTIONS } from '#/db/schema'
 import type { CatalogGame } from '#/features/catalog/server'
-import type { CollectionId } from '#/db/schema'
 
 export const Route = createFileRoute('/_authed/browse/$game/')({
   params: {
     parse: (params) => {
-      if (!COLLECTIONS.includes(params.game as CollectionId)) {
+      if (!CATALOG_GAMES.includes(params.game as CatalogGame)) {
         throw notFound()
       }
-      return { game: params.game as CollectionId }
+      return { game: params.game as CatalogGame }
     },
   },
   loader: ({ context, params }) => {
-    if (CATALOG_GAMES.includes(params.game as CatalogGame)) {
-      context.queryClient.prefetchQuery(
-        catalogSetsQueryOptions(params.game as CatalogGame),
-      )
-    }
+    context.queryClient.prefetchQuery(catalogSetsQueryOptions(params.game))
   },
   component: BrowseGamePage,
 })
@@ -42,31 +36,13 @@ function BrowseGamePage() {
         <h1 className="mt-2 font-display text-2xl font-bold sm:text-3xl">
           {COLLECTION_LABELS[game]}
         </h1>
-
-        {CATALOG_GAMES.includes(game as CatalogGame) ? (
-          <>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Sfoglia le espansioni e aggiungi le carte che possiedi alla tua
-              collezione.
-            </p>
-            <Suspense fallback={<SetsSkeleton />}>
-              <SetsGrid game={game as CatalogGame} />
-            </Suspense>
-          </>
-        ) : (
-          <div className="mt-16 flex flex-col items-center text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gold-bright/20 text-gold">
-              <Construction className="h-7 w-7" aria-hidden="true" />
-            </div>
-            <h2 className="mt-5 font-display text-xl font-bold">
-              Archivio in arrivo
-            </h2>
-            <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-              Il catalogo Calciatori Panini non è ancora disponibile. Stiamo
-              lavorando per aggiungere anche questa collezione.
-            </p>
-          </div>
-        )}
+        <p className="mt-1 text-sm text-muted-foreground">
+          Sfoglia le espansioni e aggiungi le carte che possiedi alla tua
+          collezione.
+        </p>
+        <Suspense fallback={<SetsSkeleton />}>
+          <SetsGrid game={game} />
+        </Suspense>
       </main>
     </div>
   )

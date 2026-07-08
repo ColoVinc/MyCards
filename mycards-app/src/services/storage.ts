@@ -13,7 +13,7 @@ export async function deleteCardImage(url: string | null): Promise<void> {
       await unlink(path.join(process.cwd(), 'public', url))
       return
     }
-    // Le immagini del catalogo sono URL esterni (TCGdex/OPTCG): non sono
+    // Le immagini del catalogo sono URL esterni (OPTCG): non sono
     // nostre, non vanno eliminate. Tocchiamo solo i blob che abbiamo caricato.
     if (url.includes('.blob.vercel-storage.com') && hasBlobToken()) {
       const { del } = await import('@vercel/blob')

@@ -1,10 +1,7 @@
 import { eq } from 'drizzle-orm'
 import { db } from '#/db/index'
 import { catalogCards } from '#/db/schema'
-import {
-  fetchOnePieceCardPrice,
-  fetchPokemonCardPrice,
-} from '#/services/catalog-sources'
+import { fetchOnePieceCardPrice } from '#/services/catalog-sources'
 import type { CatalogGame } from '#/features/catalog/server'
 import type { SourcePrice } from '#/services/catalog-sources'
 
@@ -15,7 +12,6 @@ const PRICE_SOURCES: Record<
   CatalogGame,
   (externalId: string) => Promise<SourcePrice | null>
 > = {
-  pokemon: fetchPokemonCardPrice,
   onepiece: fetchOnePieceCardPrice,
 }
 
@@ -39,7 +35,7 @@ function isPriceFresh(updatedAt: Date | null): boolean {
  */
 export async function refreshCatalogCardPrice(card: PricedCard): Promise<void> {
   if (isPriceFresh(card.priceUpdatedAt)) return
-  if (card.game !== 'pokemon' && card.game !== 'onepiece') return
+  if (card.game !== 'onepiece') return
   const source = PRICE_SOURCES[card.game]
 
   const externalId = card.id.slice(card.game.length + 1)

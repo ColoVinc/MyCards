@@ -8,9 +8,7 @@ import { authClient } from '#/lib/auth-client'
 
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'La mia collezione', game: null },
-  { to: '/browse/$game', label: 'Pokémon', game: 'pokemon' },
   { to: '/browse/$game', label: 'One Piece', game: 'onepiece' },
-  { to: '/browse/$game', label: 'Calciatori Panini', game: 'panini' },
 ] as const
 
 export function AppHeader({ user }: { user: { name: string; email: string } }) {
@@ -43,7 +41,7 @@ export function AppHeader({ user }: { user: { name: string; email: string } }) {
 
         <Link
           to="/browse/$game"
-          params={{ game: 'pokemon' }}
+          params={{ game: 'onepiece' }}
           className="hidden sm:block"
         >
           <Button size="sm">

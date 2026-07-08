@@ -1,9 +1,11 @@
 # MyCards
 
 Web application per catalogare, gestire e monitorare il valore della propria
-collezione di carte collezionabili (Pokémon, One Piece Card Game, con Calciatori
-Panini in arrivo), con visualizzazione 3D delle carte ed effetti olografici per
-le rarità foil.
+collezione di carte **One Piece Card Game**, con visualizzazione 3D delle carte
+ed effetti olografici per le rarità foil.
+
+> L'app è nata come multi-gioco (Pokémon, Panini): al momento è concentrata solo
+> su One Piece; la struttura resta pronta a riaggiungere altri giochi in futuro.
 
 Le carte non si fotografano a mano: si **sfogliano le collezioni ufficiali**
 (espansioni e carte importate da database online) e si aggiungono con un clic.
@@ -11,18 +13,17 @@ Le carte non si fotografano a mano: si **sfogliano le collezioni ufficiali**
 ## Funzionalità principali
 
 - **Autenticazione** email + password con sessioni persistenti e rotte protette.
-- **Archivio catalogo** per gioco: espansioni → carte del set, con ricerca e
-  paginazione (20 per pagina). Dati importati da API esterne e salvati in DB.
+- **Archivio catalogo**: espansioni → carte del set, con ricerca e paginazione
+  (20 per pagina). Dati importati da API esterne e salvati in DB.
 - **Ricerca globale** nell'header: digitando nome o codice compare un pannello di
   risultati su tutto il catalogo; un clic apre la carta.
 - **Dettaglio carta** con **viewer 3D** (React Three Fiber): rotazione 360°,
   zoom, retro generato per le carte da catalogo, shader olografico per le foil.
 - **Collezione personale** senza doppioni: ogni carta è una riga con un
   **contatore di copie** (stepper − / +). La dashboard mostra un badge ×N.
-- **Valore di mercato**: prezzo per carta e **valore totale della collezione**.
-  Pokémon da Cardmarket (EUR, via TCGdex), One Piece da OPTCG (USD, convertito in
-  EUR con cambio BCE). Aggiornamento giornaliero (non è realtime: i prezzi di
-  mercato cambiano ~una volta al giorno).
+- **Valore di mercato**: prezzo per carta e **valore totale della collezione**,
+  da OPTCG (USD, convertito in EUR con cambio BCE). Aggiornamento giornaliero
+  (non è realtime: i prezzi di mercato cambiano ~una volta al giorno).
 
 ## Stack
 
@@ -35,17 +36,15 @@ Le carte non si fotografano a mano: si **sfogliano le collezioni ufficiali**
 
 ## Fonti dati esterne (nessuna API key)
 
-| Ambito | Gioco | Fonte |
-| --- | --- | --- |
-| Carte + espansioni | Pokémon | [TCGdex](https://tcgdex.dev) (italiano) |
-| Carte + espansioni | One Piece | [OPTCG API](https://optcgapi.com) |
-| Prezzi | Pokémon | Cardmarket via TCGdex (EUR) |
-| Prezzi | One Piece | OPTCG / TCGplayer (USD) |
-| Cambio valuta | — | [Frankfurter](https://www.frankfurter.app) (BCE) |
+| Ambito                       | Fonte                                            |
+| ---------------------------- | ------------------------------------------------ |
+| Carte + espansioni One Piece | [OPTCG API](https://optcgapi.com)                |
+| Prezzi                       | OPTCG / TCGplayer (USD)                          |
+| Cambio valuta                | [Frankfurter](https://www.frankfurter.app) (BCE) |
 
 Le immagini del catalogo sono cross-origin: per usarle come texture WebGL sono
-servite tramite il proxy interno `/api/image-proxy`. I set di Pokémon TCG Pocket
-(gioco digitale) sono esclusi; vengono importate solo le carte con immagine.
+servite tramite il proxy interno `/api/image-proxy`. Vengono importate solo le
+carte con immagine.
 
 ## Avvio in sviluppo
 

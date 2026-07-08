@@ -8,7 +8,7 @@ const CARD_HEIGHT = 3.5
 const CARD_DEPTH = 0.025
 
 /**
- * Le immagini del catalogo (TCGdex/OPTCG) sono cross-origin e senza header
+ * Le immagini del catalogo (OPTCG) sono cross-origin e senza header
  * CORS: caricate direttamente come texture WebGL falliscono. Le scarichiamo
  * dal nostro proxy same-origin come blob e ne creiamo un object URL, che il
  * caricatore di texture consuma senza problemi di CORS. Gli upload locali

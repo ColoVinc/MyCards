@@ -10,12 +10,10 @@ import { CardTile, CardTileSkeleton } from '#/features/cards/card-tile'
 import { cardsQueryOptions } from '#/features/cards/queries'
 import { collectionValueQueryOptions } from '#/features/catalog/queries'
 import {
-  COLLECTION_LABELS,
   SORT_LABELS,
   SORT_OPTIONS,
   cardFiltersSchema,
 } from '#/features/cards/validation'
-import { COLLECTIONS } from '#/db/schema'
 import { formatEur } from '#/lib/format'
 import type { CardFilters } from '#/features/cards/validation'
 
@@ -48,7 +46,7 @@ function DashboardPage() {
           </div>
           <Link
             to="/browse/$game"
-            params={{ game: 'pokemon' }}
+            params={{ game: 'onepiece' }}
             className="sm:hidden"
           >
             <Button size="sm">
@@ -86,34 +84,6 @@ function FiltersBar({ filters }: { filters: CardFilters }) {
 
   return (
     <div className="mt-6 flex flex-wrap items-center gap-3">
-      <div
-        role="group"
-        aria-label="Filtra per collezione"
-        className="flex flex-wrap gap-2"
-      >
-        {(['all', ...COLLECTIONS] as const).map((collection) => {
-          const active = (filters.collection ?? 'all') === collection
-          return (
-            <button
-              key={collection}
-              onClick={() =>
-                setFilter({
-                  collection: collection === 'all' ? undefined : collection,
-                })
-              }
-              aria-pressed={active}
-              className={`label-caps cursor-pointer rounded-xl px-3.5 py-2.5 transition-colors ${
-                active
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary text-muted-foreground hover:bg-accent'
-              }`}
-            >
-              {collection === 'all' ? 'Tutte' : COLLECTION_LABELS[collection]}
-            </button>
-          )
-        })}
-      </div>
-
       <div className="ml-auto flex flex-wrap items-center gap-3">
         <CollectionSearch
           initial={filters.q ?? ''}
@@ -171,7 +141,10 @@ function CollectionSearch({
 
   // Debounce: aggiorna il filtro q senza navigare ad ogni tasto.
   useEffect(() => {
-    const id = setTimeout(() => onChangeRef.current(value.trim() || undefined), 300)
+    const id = setTimeout(
+      () => onChangeRef.current(value.trim() || undefined),
+      300,
+    )
     return () => clearTimeout(id)
   }, [value])
 
@@ -201,7 +174,7 @@ function CardsGrid({ filters }: { filters: CardFilters }) {
     return (
       <EmptyState
         title="La tua collezione è vuota"
-        message="Sfoglia le collezioni Pokémon e One Piece e aggiungi le carte che possiedi."
+        message="Sfoglia le espansioni di One Piece e aggiungi le carte che possiedi."
         showCta
       />
     )
@@ -260,7 +233,7 @@ function EmptyState({
       <h2 className="mt-5 font-display text-xl font-bold">{title}</h2>
       <p className="mt-2 max-w-sm text-sm text-muted-foreground">{message}</p>
       {showCta && (
-        <Link to="/browse/$game" params={{ game: 'pokemon' }} className="mt-6">
+        <Link to="/browse/$game" params={{ game: 'onepiece' }} className="mt-6">
           <Button>
             <Plus className="h-4 w-4" aria-hidden="true" />
             Sfoglia le collezioni
@@ -299,8 +272,7 @@ function CollectionValuePanel() {
         {data.unpricedCards > 0
           ? `${data.unpricedCards} carte senza prezzo disponibile. `
           : ''}
-        Prezzi: Pokémon da Cardmarket, One Piece da OPTCG · aggiornati una volta
-        al giorno.
+        Prezzi One Piece da OPTCG · aggiornati una volta al giorno.
       </p>
     </div>
   )

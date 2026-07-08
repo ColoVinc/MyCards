@@ -1,6 +1,5 @@
 /**
  * Sorgenti esterne del catalogo carte.
- * - Pokémon: TCGdex (https://tcgdex.dev) — dati in italiano, senza API key.
  * - One Piece: OPTCG API (https://optcgapi.com) — dati EN, senza API key.
  */
 
@@ -28,7 +27,6 @@ export interface SourcePrice {
   currency: 'EUR' | 'USD'
 }
 
-const TCGDEX_BASE = 'https://api.tcgdex.net/v2/it'
 const OPTCG_BASE = 'https://optcgapi.com/api'
 
 async function fetchJson<T>(url: string): Promise<T> {
@@ -42,86 +40,6 @@ async function fetchJson<T>(url: string): Promise<T> {
     )
   }
   return response.json() as Promise<T>
-}
-
-/* ---------- Pokémon (TCGdex) ---------- */
-
-interface TcgdexSetBrief {
-  id: string
-  name: string
-  logo?: string
-  symbol?: string
-  cardCount: { total: number; official: number }
-}
-
-interface TcgdexCardBrief {
-  id: string
-  localId: string
-  name: string
-  image?: string
-}
-
-export async function fetchPokemonSets(): Promise<Array<SourceSet>> {
-  // Escludiamo la serie "tcgp" (Pokémon TCG Pocket): è il gioco digitale,
-  // non carte fisiche da collezione, e su TCGdex spesso manca di carte/immagini.
-  const [sets, pocket] = await Promise.all([
-    fetchJson<Array<TcgdexSetBrief>>(`${TCGDEX_BASE}/sets`),
-    fetchJson<{ sets: Array<{ id: string }> }>(
-      `${TCGDEX_BASE}/series/tcgp`,
-    ).catch(() => ({ sets: [] as Array<{ id: string }> })),
-  ])
-  const pocketIds = new Set(pocket.sets.map((s) => s.id))
-
-  return sets
-    .filter((set) => !pocketIds.has(set.id))
-    .map((set) => ({
-      externalId: set.id,
-      name: set.name,
-      logoUrl: set.logo ? `${set.logo}.png` : null,
-      symbolUrl: set.symbol ? `${set.symbol}.png` : null,
-      cardCount: set.cardCount.official || set.cardCount.total,
-    }))
-}
-
-export async function fetchPokemonSetCards(
-  externalId: string,
-): Promise<Array<SourceCard>> {
-  const set = await fetchJson<{ cards: Array<TcgdexCardBrief> }>(
-    `${TCGDEX_BASE}/sets/${encodeURIComponent(externalId)}`,
-  )
-  return set.cards.map((card) => ({
-    externalId: card.id,
-    name: card.name,
-    number: card.localId,
-    rarity: null, // il listato TCGdex non espone la rarità
-    imageUrl: card.image ? `${card.image}/high.webp` : null,
-    cardType: null,
-    color: null,
-  }))
-}
-
-interface TcgdexCardDetail {
-  pricing?: {
-    cardmarket?: {
-      unit?: string
-      trend?: number
-      avg?: number
-      avg7?: number
-    }
-  }
-}
-
-/** Prezzo Cardmarket (EUR) della singola carta Pokémon da TCGdex. */
-export async function fetchPokemonCardPrice(
-  externalId: string,
-): Promise<SourcePrice | null> {
-  const card = await fetchJson<TcgdexCardDetail>(
-    `${TCGDEX_BASE}/cards/${encodeURIComponent(externalId)}`,
-  )
-  const cm = card.pricing?.cardmarket
-  const value = cm?.trend ?? cm?.avg ?? cm?.avg7
-  if (typeof value !== 'number' || value <= 0) return null
-  return { price: value, currency: 'EUR' }
 }
 
 /* ---------- One Piece (OPTCG API) ---------- */

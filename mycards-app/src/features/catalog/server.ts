@@ -61,7 +61,7 @@ export const searchCatalogFn = createServerFn({ method: 'GET' })
 
     return rows.map((row) => ({
       id: row.id,
-      game: row.game as CatalogGame,
+      game: row.game,
       externalId: row.id.slice(row.game.length + 1),
       name: row.name,
       number: row.number,

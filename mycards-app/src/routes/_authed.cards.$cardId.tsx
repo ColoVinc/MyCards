@@ -127,12 +127,7 @@ function InfoPanel({ card }: { card: CardWithPrice }) {
         {card.name}
       </h1>
 
-      <MarketValue
-        priceEur={card.priceEur}
-        game={card.collection}
-        cardName={card.name}
-        quantity={card.quantity}
-      />
+      <MarketValue priceEur={card.priceEur} quantity={card.quantity} />
 
       <dl className="mt-8 grid grid-cols-2 gap-4">
         <InfoBox

@@ -70,7 +70,7 @@ export const verification = pgTable('verification', {
 
 /* ---------- MyCards ---------- */
 
-export const COLLECTIONS = ['pokemon', 'onepiece', 'panini'] as const
+export const COLLECTIONS = ['onepiece'] as const
 export type CollectionId = (typeof COLLECTIONS)[number]
 
 export const cards = pgTable(
@@ -115,7 +115,7 @@ export type NewCard = typeof cards.$inferInsert
 export const catalogSets = pgTable(
   'catalog_sets',
   {
-    /** `${game}:${externalId}` — es. "pokemon:sv10", "onepiece:OP-01". */
+    /** `${game}:${externalId}` — es. "onepiece:OP-01". */
     id: text('id').primaryKey(),
     game: text('game', { enum: COLLECTIONS }).notNull(),
     externalId: text('external_id').notNull(),
@@ -134,7 +134,7 @@ export const catalogSets = pgTable(
 export const catalogCards = pgTable(
   'catalog_cards',
   {
-    /** `${game}:${externalCardId}` — es. "pokemon:sv10-001", "onepiece:OP01-016". */
+    /** `${game}:${externalCardId}` — es. "onepiece:OP01-016". */
     id: text('id').primaryKey(),
     setId: text('set_id')
       .notNull()
@@ -146,8 +146,8 @@ export const catalogCards = pgTable(
     imageUrl: text('image_url'),
     cardType: text('card_type'),
     color: text('color'),
-    // Valore di mercato nella valuta nativa della fonte (EUR per Pokémon via
-    // Cardmarket/TCGdex, USD per One Piece via OPTCG). Convertito a EUR a runtime.
+    // Valore di mercato nella valuta nativa della fonte (USD per One Piece via
+    // OPTCG). Convertito a EUR a runtime.
     price: real('price'),
     priceCurrency: text('price_currency'),
     priceUpdatedAt: timestamp('price_updated_at'),

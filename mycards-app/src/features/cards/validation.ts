@@ -2,34 +2,24 @@ import { z } from 'zod'
 import { COLLECTIONS } from '#/db/schema'
 
 export const COLLECTION_LABELS: Record<(typeof COLLECTIONS)[number], string> = {
-  pokemon: 'Pokémon',
   onepiece: 'One Piece',
-  panini: 'Calciatori Panini',
 }
 
-/** Rarità che attivano l'effetto olografico nel viewer 3D. */
+/** Rarità One Piece che attivano l'effetto olografico nel viewer 3D. */
 export const FOIL_RARITIES = new Set(
-  [
-    'rara holo',
-    'ultra rara',
-    'segreta',
-    'super rare',
-    'secret rare',
-    'leader',
-    'speciale',
-    'limited edition',
-  ].map((r) => r.toLowerCase()),
+  ['super rare', 'secret rare', 'leader', 'special', 'treasure rare'].map((r) =>
+    r.toLowerCase(),
+  ),
 )
 
 export function isFoilRarity(rarity: string): boolean {
   const r = rarity.toLowerCase()
   return (
     FOIL_RARITIES.has(r) ||
-    r.includes('holo') ||
     r.includes('foil') ||
-    r.includes('rara') ||
     r.includes('rare') ||
-    r.includes('secret')
+    r.includes('secret') ||
+    r.includes('leader')
   )
 }
 

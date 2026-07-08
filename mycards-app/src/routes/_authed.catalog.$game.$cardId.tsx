@@ -156,7 +156,7 @@ function InfoPanel({
         {card.name}
       </h1>
 
-      <MarketValue priceEur={card.priceEur} game={game} cardName={card.name} />
+      <MarketValue priceEur={card.priceEur} />
 
       <dl className="mt-8 grid grid-cols-2 gap-4">
         <InfoBox label="Collezione" value={COLLECTION_LABELS[game]} />

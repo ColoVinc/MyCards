@@ -207,7 +207,7 @@ function CatalogCardTile({
   return (
     <Link
       to="/catalog/$game/$cardId"
-      params={{ game: card.game as CatalogGame, cardId: externalId }}
+      params={{ game: card.game, cardId: externalId }}
       className="group block focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
       aria-label={`Apri ${card.name}`}
     >

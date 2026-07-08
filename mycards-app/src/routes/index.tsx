@@ -19,7 +19,7 @@ const FEATURES = [
     icon: Layers,
     title: 'Tutto in un posto',
     description:
-      'Pokémon, One Piece Card Game e Calciatori Panini: la tua collezione completa, sempre con te.',
+      'Sfoglia le espansioni di One Piece Card Game e tieni la tua collezione completa, sempre con te.',
   },
   {
     icon: Box,

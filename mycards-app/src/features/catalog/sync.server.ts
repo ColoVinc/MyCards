@@ -7,8 +7,6 @@ import { catalogCards, catalogSets, catalogSync } from '#/db/schema'
 import {
   fetchOnePieceSetCards,
   fetchOnePieceSets,
-  fetchPokemonSetCards,
-  fetchPokemonSets,
 } from '#/services/catalog-sources'
 import { CATALOG_GAMES } from '#/features/catalog/games'
 import type { CatalogGame } from '#/features/catalog/games'
@@ -16,7 +14,6 @@ import type { CatalogSet } from '#/db/schema'
 import type { SourceCard, SourceSet } from '#/services/catalog-sources'
 
 const SET_SOURCES: Record<CatalogGame, () => Promise<Array<SourceSet>>> = {
-  pokemon: fetchPokemonSets,
   onepiece: fetchOnePieceSets,
 }
 
@@ -24,7 +21,6 @@ const CARD_SOURCES: Record<
   CatalogGame,
   (externalId: string) => Promise<Array<SourceCard>>
 > = {
-  pokemon: fetchPokemonSetCards,
   onepiece: fetchOnePieceSetCards,
 }
 
@@ -42,7 +38,11 @@ function isFresh(syncedAt: Date | null): boolean {
 /** Sincronizza la lista espansioni di un gioco se mai fatta o scaduta (TTL). */
 export async function ensureSetsSynced(game: CatalogGame): Promise<void> {
   const meta = (
-    await db.select().from(catalogSync).where(eq(catalogSync.game, game)).limit(1)
+    await db
+      .select()
+      .from(catalogSync)
+      .where(eq(catalogSync.game, game))
+      .limit(1)
   ).at(0)
   if (isFresh(meta?.setsSyncedAt ?? null)) return
 
@@ -84,7 +84,7 @@ export async function ensureSetsSynced(game: CatalogGame): Promise<void> {
 export async function ensureSetCardsSynced(set: CatalogSet): Promise<void> {
   if (isFresh(set.cardsSyncedAt)) return
 
-  const game = set.game as CatalogGame
+  const game = set.game
   let sourceCards: Array<SourceCard>
   try {
     sourceCards = await CARD_SOURCES[game](set.externalId)
@@ -121,7 +121,7 @@ export async function ensureSetCardsSynced(set: CatalogSet): Promise<void> {
         })),
       )
       // Upsert: aggiorna i campi mutabili così le immagini/nomi aggiunti su
-      // TCGdex dopo la prima sync compaiono al refresh (TTL), niente null fissi.
+      // OPTCG dopo la prima sync compaiono al refresh (TTL), niente null fissi.
       .onConflictDoUpdate({
         target: catalogCards.id,
         set: {

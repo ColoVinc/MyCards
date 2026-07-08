@@ -5,7 +5,7 @@ import { createFileRoute } from '@tanstack/react-router'
  * esterne non garantiscono header CORS, quindi le serviamo dalla nostra
  * origine. Solo host noti, per non diventare un open proxy.
  */
-const ALLOWED_HOSTS = ['assets.tcgdex.net', 'optcgapi.com', 'www.optcgapi.com']
+const ALLOWED_HOSTS = ['optcgapi.com', 'www.optcgapi.com']
 
 function isAllowed(hostname: string): boolean {
   return (

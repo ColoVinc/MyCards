@@ -25,10 +25,13 @@ export async function getUsdToEur(): Promise<number> {
   }
 
   try {
-    const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=EUR', {
-      headers: { accept: 'application/json' },
-      signal: AbortSignal.timeout(15_000),
-    })
+    const res = await fetch(
+      'https://api.frankfurter.app/latest?from=USD&to=EUR',
+      {
+        headers: { accept: 'application/json' },
+        signal: AbortSignal.timeout(15_000),
+      },
+    )
     if (!res.ok) throw new Error(`fx ${res.status}`)
     const data = (await res.json()) as { rates?: { EUR?: number } }
     const rate = data.rates?.EUR

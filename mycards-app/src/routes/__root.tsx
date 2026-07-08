@@ -32,7 +32,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       {
         name: 'description',
         content:
-          'Cataloga, gestisci e visualizza in 3D la tua collezione di carte Pokémon, One Piece e Calciatori Panini.',
+          'Cataloga, gestisci e visualizza in 3D la tua collezione di carte One Piece Card Game.',
       },
     ],
     links: [
