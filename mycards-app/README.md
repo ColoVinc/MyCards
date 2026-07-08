@@ -1,18 +1,51 @@
 # MyCards
 
-Web application per catalogare, gestire e visualizzare online la propria collezione di carte collezionabili (Pokémon, One Piece Card Game, Calciatori Panini), con visualizzazione 3D delle carte ed effetti olografici per le rarità foil.
+Web application per catalogare, gestire e monitorare il valore della propria
+collezione di carte collezionabili (Pokémon, One Piece Card Game, con Calciatori
+Panini in arrivo), con visualizzazione 3D delle carte ed effetti olografici per
+le rarità foil.
 
-Le carte si aggiungono **sfogliando le collezioni ufficiali** (espansioni e carte importate da database online) e cliccando "Aggiungi": niente foto fatte a mano.
+Le carte non si fotografano a mano: si **sfogliano le collezioni ufficiali**
+(espansioni e carte importate da database online) e si aggiungono con un clic.
+
+## Funzionalità principali
+
+- **Autenticazione** email + password con sessioni persistenti e rotte protette.
+- **Archivio catalogo** per gioco: espansioni → carte del set, con ricerca e
+  paginazione (20 per pagina). Dati importati da API esterne e salvati in DB.
+- **Ricerca globale** nell'header: digitando nome o codice compare un pannello di
+  risultati su tutto il catalogo; un clic apre la carta.
+- **Dettaglio carta** con **viewer 3D** (React Three Fiber): rotazione 360°,
+  zoom, retro generato per le carte da catalogo, shader olografico per le foil.
+- **Collezione personale** senza doppioni: ogni carta è una riga con un
+  **contatore di copie** (stepper − / +). La dashboard mostra un badge ×N.
+- **Valore di mercato**: prezzo per carta e **valore totale della collezione**.
+  Pokémon da Cardmarket (EUR, via TCGdex), One Piece da OPTCG (USD, convertito in
+  EUR con cambio BCE). Aggiornamento giornaliero (non è realtime: i prezzi di
+  mercato cambiano ~una volta al giorno).
 
 ## Stack
 
-- **Framework**: [TanStack Start](https://tanstack.com/start) (React 19 + TypeScript strict, full-stack)
+- **Framework**: [TanStack Start](https://tanstack.com/start) (React 19 + TypeScript strict, full-stack SSR)
 - **Routing / Data / Form**: TanStack Router, TanStack Query, TanStack Form
 - **Database**: PostgreSQL ([Neon](https://neon.com)) con [Drizzle ORM](https://orm.drizzle.team)
 - **Autenticazione**: [Better Auth](https://better-auth.com) (email + password, sessioni cookie, rate limiting)
-- **Catalogo carte**: [TCGdex](https://tcgdex.dev) (Pokémon, italiano) e [OPTCG API](https://optcgapi.com) (One Piece) — importati in DB con sync pigra
-- **3D**: [React Three Fiber](https://r3f.docs.pmnd.rs) + drei, shader olografico custom, retro generato per le carte da catalogo
+- **3D**: [React Three Fiber](https://r3f.docs.pmnd.rs) + drei, shader olografico custom
 - **UI**: Tailwind CSS 4, design system "MyCards" (Sora / Hanken Grotesk / Space Grotesk)
+
+## Fonti dati esterne (nessuna API key)
+
+| Ambito | Gioco | Fonte |
+| --- | --- | --- |
+| Carte + espansioni | Pokémon | [TCGdex](https://tcgdex.dev) (italiano) |
+| Carte + espansioni | One Piece | [OPTCG API](https://optcgapi.com) |
+| Prezzi | Pokémon | Cardmarket via TCGdex (EUR) |
+| Prezzi | One Piece | OPTCG / TCGplayer (USD) |
+| Cambio valuta | — | [Frankfurter](https://www.frankfurter.app) (BCE) |
+
+Le immagini del catalogo sono cross-origin: per usarle come texture WebGL sono
+servite tramite il proxy interno `/api/image-proxy`. I set di Pokémon TCG Pocket
+(gioco digitale) sono esclusi; vengono importate solo le carte con immagine.
 
 ## Avvio in sviluppo
 
@@ -21,25 +54,26 @@ npm install --legacy-peer-deps
 npm run dev
 ```
 
-Al primo avvio **Neon Launchpad provisiona automaticamente un database di sviluppo** e scrive `DATABASE_URL` in `.env.local`; lo schema viene creato da `db/init.sql`. Non serve alcun account.
+Al primo avvio **Neon Launchpad provisiona automaticamente un database di
+sviluppo** e scrive `DATABASE_URL` in `.env`; lo schema viene creato da
+`db/init.sql`. Non serve alcun account.
 
 L'app gira su [http://localhost:3000](http://localhost:3000).
 
-### Archivio collezioni
-
-Dal menu si accede all'archivio di ogni gioco: si sfogliano le espansioni, si aprono le carte di un set (ricerca per nome/numero) e si aggiungono alla propria collezione. Le carte e le espansioni vengono importate dalle API esterne al primo accesso e salvate in DB (`catalog_sets`, `catalog_cards`). Le immagini, cross-origin, sono servite come texture 3D tramite il proxy interno `/api/image-proxy`. Calciatori Panini è al momento in standby (nessuna fonte dati aperta).
+> Nota: `--legacy-peer-deps` serve perché una dipendenza dichiara un peer di Vite
+> più vecchio di quello usato dal progetto.
 
 ## Variabili d'ambiente
 
-Vedi `.env.example`:
+Vedi `.env.example` (i file `.env` e `.env.local` sono ignorati da git):
 
-| Variabile               | Sviluppo                  | Produzione                       |
-| ----------------------- | ------------------------- | -------------------------------- |
-| `DATABASE_URL`          | auto (Neon Launchpad)     | connection string Neon           |
-| `BETTER_AUTH_URL`       | `http://localhost:3000`   | URL pubblico dell'app            |
-| `BETTER_AUTH_SECRET`    | qualsiasi stringa robusta | `npx -y @better-auth/cli secret` |
+| Variabile            | Sviluppo                  | Produzione                       |
+| -------------------- | ------------------------- | -------------------------------- |
+| `DATABASE_URL`       | auto (Neon Launchpad)     | connection string Neon           |
+| `BETTER_AUTH_URL`    | `http://localhost:3000`   | URL pubblico dell'app            |
+| `BETTER_AUTH_SECRET` | qualsiasi stringa robusta | `npx -y @better-auth/cli secret` |
 
-## Database
+## Database e catalogo
 
 Lo schema vive in `src/db/schema.ts` (Drizzle). Comandi utili:
 
@@ -48,22 +82,33 @@ npm run db:generate   # genera le migrazioni SQL in drizzle/
 npm run db:migrate    # applica le migrazioni
 npm run db:push       # push diretto dello schema (solo sviluppo)
 npm run db:studio     # UI di ispezione del database
+
+node scripts/apply-schema.mjs    # applica db/init.sql + ALTER additivi
+npx tsx scripts/sync-catalog.ts  # importa TUTTO il catalogo (set + carte)
 ```
+
+Il catalogo si popola in modo **pigro** (un set viene importato quando lo si apre)
+e si aggiorna da solo con un TTL di 7 giorni. Lo script `sync-catalog.ts`
+scarica in anticipo tutte le espansioni e carte (utile per la ricerca globale).
 
 ## Struttura del progetto
 
 ```
 src/
-├── routes/            # file-based routing (landing, auth, dashboard, carte)
-├── components/        # componenti riutilizzabili + ui/ (design system)
+├── routes/            # file-based routing (landing, auth, dashboard, browse, catalog)
+├── components/        # componenti condivisi + ui/ (design system, ricerca globale)
 ├── features/
 │   ├── auth/          # sessione, layout auth, server functions
-│   ├── cards/         # collezione personale: server functions, query, viewer 3D
-│   └── catalog/       # archivio collezioni: sync, query, server functions
-├── lib/               # auth (Better Auth), utils
+│   ├── cards/         # collezione personale: server fn, query, viewer 3D, tile
+│   ├── catalog/       # archivio: sync (server-only), query, server fn, stepper
+│   └── pricing/       # componente valore di mercato
+├── lib/               # auth (Better Auth), utils, formattazione valuta
 ├── db/                # schema Drizzle + client
-└── services/          # sorgenti catalogo esterne + util storage
+└── services/          # sorgenti catalogo, prezzi, cambio valuta, storage
 ```
+
+> I moduli con logica server-only (accesso al DB fuori dagli handler) usano il
+> suffisso `.server.ts` e non vanno importati da codice client.
 
 ## Build e deploy (Vercel)
 
