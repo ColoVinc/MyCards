@@ -1,5 +1,6 @@
 import {
   boolean,
+  date,
   index,
   integer,
   pgTable,
@@ -151,6 +152,10 @@ export const catalogCards = pgTable(
     price: real('price'),
     priceCurrency: text('price_currency'),
     priceUpdatedAt: timestamp('price_updated_at'),
+    // Data in cui OPTCG ha rilevato il prezzo (campo `date_scraped`): è solo
+    // una DATA (OPTCG non espone l'ora). Diversa da priceUpdatedAt, che è
+    // quando la NOSTRA app ha riscaricato il prezzo.
+    priceScrapedAt: date('price_scraped_at'),
   },
   (table) => [
     index('catalog_cards_set_idx').on(table.setId),

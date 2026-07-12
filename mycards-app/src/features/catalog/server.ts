@@ -113,11 +113,21 @@ export const getCatalogSetFn = createServerFn({ method: 'GET' })
     return { set, cards: setCards }
   })
 
+/** Una stampa (base o variante) di una carta, per il selettore di versioni. */
+export interface CardPrint {
+  externalId: string
+  name: string
+  rarity: string | null
+  imageUrl: string | null
+}
+
 export interface CatalogCardDetail extends CatalogCard {
   setName: string
   setExternalId: string
   /** Valore di mercato convertito in EUR (null se non disponibile). */
   priceEur: number | null
+  /** Tutte le stampe con lo stesso codice carta (inclusa questa), base first. */
+  prints: Array<CardPrint>
 }
 
 export const getCatalogCardFn = createServerFn({ method: 'GET' })
@@ -146,11 +156,41 @@ export const getCatalogCardFn = createServerFn({ method: 'GET' })
       await refreshCatalogCardPrice(found.card)
       const usd = await getUsdToEur()
 
+      // Tutte le stampe con lo stesso codice carta (card_set_id = number) nello
+      // stesso set: base + eventuali varianti (Alternate Art, ecc.). Ordinate
+      // per id così la base (senza suffisso _pN) viene per prima.
+      const prints: Array<CardPrint> = found.card.number
+        ? (
+            await db
+              .select({
+                id: catalogCards.id,
+                game: catalogCards.game,
+                name: catalogCards.name,
+                rarity: catalogCards.rarity,
+                imageUrl: catalogCards.imageUrl,
+              })
+              .from(catalogCards)
+              .where(
+                and(
+                  eq(catalogCards.setId, found.card.setId),
+                  eq(catalogCards.number, found.card.number),
+                ),
+              )
+              .orderBy(asc(catalogCards.id))
+          ).map((p) => ({
+            externalId: p.id.slice(p.game.length + 1),
+            name: p.name,
+            rarity: p.rarity,
+            imageUrl: p.imageUrl,
+          }))
+        : []
+
       return {
         ...found.card,
         setName: found.setName,
         setExternalId: found.setExternalId,
         priceEur: toEur(found.card.price, found.card.priceCurrency, usd),
+        prints,
       }
     },
   )
@@ -282,6 +322,8 @@ export interface CollectionValue {
   /** Carte distinte con un prezzo disponibile / senza prezzo. */
   pricedCards: number
   unpricedCards: number
+  /** Data OPTCG più recente tra i prezzi usati (YYYY-MM-DD), o null. */
+  lastPriceDate: string | null
 }
 
 /** Valore totale della collezione personale, aggiornando i prezzi scaduti. */
@@ -298,6 +340,7 @@ export const getCollectionValueFn = createServerFn({ method: 'GET' }).handler(
         price: catalogCards.price,
         priceCurrency: catalogCards.priceCurrency,
         priceUpdatedAt: catalogCards.priceUpdatedAt,
+        priceScrapedAt: catalogCards.priceScrapedAt,
       })
       .from(cards)
       .innerJoin(catalogCards, eq(cards.catalogCardId, catalogCards.id))
@@ -310,6 +353,7 @@ export const getCollectionValueFn = createServerFn({ method: 'GET' }).handler(
     let totalEur = 0
     let pricedCards = 0
     let unpricedCards = 0
+    let lastPriceDate: string | null = null
     for (const row of owned) {
       const eur = toEur(row.price, row.priceCurrency, usd)
       if (eur === null) {
@@ -317,6 +361,14 @@ export const getCollectionValueFn = createServerFn({ method: 'GET' }).handler(
       } else {
         pricedCards++
         totalEur += eur * row.quantity
+        // Data OPTCG più recente tra le carte con prezzo (confronto lessicale
+        // valido sul formato YYYY-MM-DD).
+        if (
+          row.priceScrapedAt &&
+          (lastPriceDate === null || row.priceScrapedAt > lastPriceDate)
+        ) {
+          lastPriceDate = row.priceScrapedAt
+        }
       }
     }
 
@@ -324,6 +376,7 @@ export const getCollectionValueFn = createServerFn({ method: 'GET' }).handler(
       totalEur: Math.round(totalEur * 100) / 100,
       pricedCards,
       unpricedCards,
+      lastPriceDate,
     }
   },
 )

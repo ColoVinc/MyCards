@@ -94,7 +94,8 @@ CREATE TABLE IF NOT EXISTS catalog_cards (
     color TEXT,
     price REAL,
     price_currency TEXT,
-    price_updated_at TIMESTAMP
+    price_updated_at TIMESTAMP,
+    price_scraped_at DATE
 );
 
 CREATE INDEX IF NOT EXISTS catalog_cards_set_idx ON catalog_cards (set_id);

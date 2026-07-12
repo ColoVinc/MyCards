@@ -12,7 +12,11 @@ import { QuantityStepper } from '#/features/catalog/quantity-stepper'
 import { CATALOG_GAMES } from '#/features/catalog/server'
 import { COLLECTION_LABELS, isFoilRarity } from '#/features/cards/validation'
 import { MarketValue } from '#/features/pricing/market-value'
-import type { CatalogCardDetail, CatalogGame } from '#/features/catalog/server'
+import type {
+  CardPrint,
+  CatalogCardDetail,
+  CatalogGame,
+} from '#/features/catalog/server'
 
 const Card3DViewer = lazy(() => import('#/features/cards/card-3d'))
 
@@ -156,7 +160,7 @@ function InfoPanel({
         {card.name}
       </h1>
 
-      <MarketValue priceEur={card.priceEur} />
+      <MarketValue priceEur={card.priceEur} updatedAt={card.priceScrapedAt} />
 
       <dl className="mt-8 grid grid-cols-2 gap-4">
         <InfoBox label="Collezione" value={COLLECTION_LABELS[game]} />
@@ -166,7 +170,92 @@ function InfoPanel({
         {card.color && <InfoBox label="Colore" value={card.color} />}
       </dl>
 
+      <PrintSelector
+        game={game}
+        prints={card.prints}
+        activeExternalId={card.id.slice(game.length + 1)}
+      />
+
       <CollectionControl catalogCardId={card.id} />
+    </div>
+  )
+}
+
+/**
+ * Etichetta breve di ogni stampa: si toglie il prefisso comune a tutti i nomi
+ * (es. "Nefeltari Vivi (001)") lasciando il distinguo — "(Alternate Art)" →
+ * "Alternate Art"; la base, che non ha resto, diventa "Originale".
+ */
+function printLabels(prints: Array<CardPrint>): Array<string> {
+  const names = prints.map((p) => p.name)
+  let prefix = names[0] ?? ''
+  for (const name of names) {
+    while (!name.startsWith(prefix)) prefix = prefix.slice(0, -1)
+  }
+  return names.map((name) => {
+    const rest = name
+      .slice(prefix.length)
+      .trim()
+      .replace(/^\(|\)$/g, '')
+      .trim()
+    return rest || 'Originale'
+  })
+}
+
+function PrintSelector({
+  game,
+  prints,
+  activeExternalId,
+}: {
+  game: CatalogGame
+  prints: Array<CardPrint>
+  activeExternalId: string
+}) {
+  if (prints.length < 2) return null
+  const labels = printLabels(prints)
+
+  return (
+    <div className="mt-8">
+      <p className="label-caps mb-3 text-muted-foreground">
+        Stampe — {prints.length} versioni
+      </p>
+      <div className="flex flex-wrap gap-3">
+        {prints.map((print, i) => {
+          const active = print.externalId === activeExternalId
+          return (
+            <Link
+              key={print.externalId}
+              to="/catalog/$game/$cardId"
+              params={{ game, cardId: print.externalId }}
+              aria-current={active ? 'true' : undefined}
+              className={`group w-24 shrink-0 rounded-lg border p-1.5 text-center transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ${
+                active
+                  ? 'border-primary ring-2 ring-primary/40'
+                  : 'border-border/60 hover:border-primary/60'
+              }`}
+            >
+              <div className="relative aspect-[2.5/3.5] overflow-hidden rounded bg-surface-dim">
+                {print.imageUrl && (
+                  <img
+                    src={print.imageUrl}
+                    alt={print.name}
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                )}
+              </div>
+              <span
+                className={`mt-1.5 block truncate text-xs font-medium ${
+                  active ? 'text-primary' : 'text-muted-foreground'
+                }`}
+                title={labels[i]}
+              >
+                {labels[i]}
+              </span>
+            </Link>
+          )
+        })}
+      </div>
     </div>
   )
 }

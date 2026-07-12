@@ -33,6 +33,9 @@ await tryRun(
 await tryRun(
   'ALTER TABLE catalog_cards ADD COLUMN IF NOT EXISTS price_updated_at TIMESTAMP',
 )
+await tryRun(
+  'ALTER TABLE catalog_cards ADD COLUMN IF NOT EXISTS price_scraped_at DATE',
+)
 
 await client.query(sql)
 

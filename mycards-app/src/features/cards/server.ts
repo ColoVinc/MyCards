@@ -13,6 +13,8 @@ import type { CardFilters } from '#/features/cards/validation'
 /** Carta della collezione con il valore di mercato convertito in EUR. */
 export interface CardWithPrice extends Card {
   priceEur: number | null
+  /** Data (YYYY-MM-DD) in cui OPTCG ha rilevato il prezzo, o null. */
+  priceScrapedAt: string | null
 }
 
 export interface CardListResult {
@@ -56,6 +58,7 @@ export const listCardsFn = createServerFn({ method: 'GET' })
           card: cards,
           price: catalogCards.price,
           priceCurrency: catalogCards.priceCurrency,
+          priceScrapedAt: catalogCards.priceScrapedAt,
         })
         .from(cards)
         .leftJoin(catalogCards, eq(cards.catalogCardId, catalogCards.id))
@@ -74,6 +77,7 @@ export const listCardsFn = createServerFn({ method: 'GET' })
       cards: rows.map((row) => ({
         ...row.card,
         priceEur: toEur(row.price, row.priceCurrency, usd),
+        priceScrapedAt: row.priceScrapedAt,
       })),
       rarities: rarityRows.map((r) => r.rarity),
       total: totalRows.length,
@@ -96,6 +100,7 @@ export const getCardFn = createServerFn({ method: 'GET' })
         price: catalogCards.price,
         priceCurrency: catalogCards.priceCurrency,
         priceUpdatedAt: catalogCards.priceUpdatedAt,
+        priceScrapedAt: catalogCards.priceScrapedAt,
       })
       .from(cards)
       .leftJoin(catalogCards, eq(cards.catalogCardId, catalogCards.id))
@@ -105,6 +110,7 @@ export const getCardFn = createServerFn({ method: 'GET' })
     if (!row) return null
 
     let priceEur: number | null = null
+    let priceScrapedAt: string | null = row.priceScrapedAt
     if (row.catId && row.game) {
       const priced = {
         id: row.catId,
@@ -113,12 +119,14 @@ export const getCardFn = createServerFn({ method: 'GET' })
         price: row.price,
         priceCurrency: row.priceCurrency,
         priceUpdatedAt: row.priceUpdatedAt,
+        priceScrapedAt: row.priceScrapedAt,
       }
       await refreshCatalogCardPrice(priced)
       const usd = await getUsdToEur()
       priceEur = toEur(priced.price, priced.priceCurrency, usd)
+      priceScrapedAt = priced.priceScrapedAt
     }
-    return { ...row.card, priceEur }
+    return { ...row.card, priceEur, priceScrapedAt }
   })
 
 export const deleteCardFn = createServerFn({ method: 'POST' })

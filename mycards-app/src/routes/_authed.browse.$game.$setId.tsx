@@ -4,6 +4,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { ArrowLeft, ImageOff, Search } from 'lucide-react'
 import { AppHeader } from '#/components/app-header'
 import { RarityChip } from '#/components/rarity-chip'
+import { Select } from '#/components/ui/input'
 import { PAGE_SIZE, Pagination } from '#/components/ui/pagination'
 import {
   catalogSetQueryOptions,
@@ -61,18 +62,28 @@ function CatalogSetPage() {
 function SetDetail({ fullSetId }: { fullSetId: string }) {
   const { data } = useSuspenseQuery(catalogSetQueryOptions(fullSetId))
   const [search, setSearch] = useState('')
+  const [rarity, setRarity] = useState('')
   const [page, setPage] = useState(1)
+
+  const rarities = useMemo(() => {
+    if (!data) return []
+    const set = new Set<string>()
+    for (const card of data.cards) if (card.rarity) set.add(card.rarity)
+    return Array.from(set).sort()
+  }, [data])
 
   const filteredCards = useMemo(() => {
     if (!data) return []
     const term = search.trim().toLowerCase()
-    if (!term) return data.cards
-    return data.cards.filter(
-      (card) =>
+    return data.cards.filter((card) => {
+      const matchesTerm =
+        !term ||
         card.name.toLowerCase().includes(term) ||
-        (card.number ?? '').toLowerCase().includes(term),
-    )
-  }, [data, search])
+        (card.number ?? '').toLowerCase().includes(term)
+      const matchesRarity = !rarity || card.rarity === rarity
+      return matchesTerm && matchesRarity
+    })
+  }, [data, search, rarity])
 
   if (!data) {
     return (
@@ -105,22 +116,41 @@ function SetDetail({ fullSetId }: { fullSetId: string }) {
           </div>
         </div>
 
-        <div className="relative w-full sm:w-72">
-          <Search
-            className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-            aria-hidden="true"
-          />
-          <input
-            type="search"
-            value={search}
+        <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
+          <div className="relative w-full sm:w-72">
+            <Search
+              className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value)
+                setPage(1)
+              }}
+              placeholder="Cerca per nome o numero…"
+              aria-label="Cerca nell'espansione"
+              className="h-10 w-full rounded-full border border-border/60 bg-card pr-4 pl-9 text-sm shadow-sm placeholder:text-muted-foreground/70 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            />
+          </div>
+
+          <Select
+            aria-label="Filtra per rarità"
+            value={rarity}
             onChange={(e) => {
-              setSearch(e.target.value)
+              setRarity(e.target.value)
               setPage(1)
             }}
-            placeholder="Cerca per nome o numero…"
-            aria-label="Cerca nell'espansione"
-            className="h-10 w-full rounded-full border border-border/60 bg-card pr-4 pl-9 text-sm shadow-sm placeholder:text-muted-foreground/70 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-          />
+            className="w-full sm:w-44"
+          >
+            <option value="">Tutte le rarità</option>
+            {rarities.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </Select>
         </div>
       </div>
 

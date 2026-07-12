@@ -125,6 +125,8 @@ export async function ensureSetCardsSynced(set: CatalogSet): Promise<void> {
           price: card.price,
           priceCurrency: card.price !== null ? 'USD' : null,
           priceUpdatedAt: card.price !== null ? new Date() : null,
+          // Data di aggiornamento prezzo dichiarata da OPTCG (solo data).
+          priceScrapedAt: card.scrapedAt,
         })),
       )
       // Upsert: aggiorna i campi mutabili così le immagini/nomi/prezzi aggiunti
@@ -141,6 +143,7 @@ export async function ensureSetCardsSynced(set: CatalogSet): Promise<void> {
           price: sql`excluded.price`,
           priceCurrency: sql`excluded.price_currency`,
           priceUpdatedAt: sql`excluded.price_updated_at`,
+          priceScrapedAt: sql`excluded.price_scraped_at`,
         },
       })
   }

@@ -1,4 +1,4 @@
-import { formatEur } from '#/lib/format'
+import { formatDate, formatEur } from '#/lib/format'
 
 /** Fonte del prezzo One Piece con link verificabile. */
 const PRICE_SOURCE = { label: 'OPTCG', url: 'https://optcgapi.com' }
@@ -7,9 +7,12 @@ const PRICE_SOURCE = { label: 'OPTCG', url: 'https://optcgapi.com' }
 export function MarketValue({
   priceEur,
   quantity = 1,
+  updatedAt = null,
 }: {
   priceEur: number | null
   quantity?: number
+  /** Data (YYYY-MM-DD) in cui OPTCG ha rilevato il prezzo. */
+  updatedAt?: string | null
 }) {
   return (
     <div className="mt-6 rounded-md bg-primary/5 p-4">
@@ -38,7 +41,9 @@ export function MarketValue({
         >
           {PRICE_SOURCE.label}
         </a>{' '}
-        · aggiornato giornalmente
+        {updatedAt
+          ? `· aggiornato il ${formatDate(updatedAt)}`
+          : '· aggiornato giornalmente'}
       </p>
     </div>
   )

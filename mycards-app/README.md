@@ -15,6 +15,10 @@ Le carte non si fotografano a mano: si **sfogliano le collezioni ufficiali**
 - **Autenticazione** email + password con sessioni persistenti e rotte protette.
 - **Archivio catalogo**: espansioni → carte del set, con ricerca e paginazione
   (20 per pagina). Dati importati da API esterne e salvati in DB.
+- **Stampe multiple**: le diverse versioni di una carta (base, _Alternate Art_,
+  ecc.) sono tessere distinte, ognuna con immagine, prezzo e conteggio propri.
+  Nel dettaglio carta un selettore mostra tutte le versioni e permette di
+  passare dall'una all'altra.
 - **Ricerca globale** nell'header: digitando nome o codice compare un pannello di
   risultati su tutto il catalogo; un clic apre la carta.
 - **Dettaglio carta** con **viewer 3D** (React Three Fiber): rotazione 360°,
@@ -23,7 +27,9 @@ Le carte non si fotografano a mano: si **sfogliano le collezioni ufficiali**
   **contatore di copie** (stepper − / +). La dashboard mostra un badge ×N.
 - **Valore di mercato**: prezzo per carta e **valore totale della collezione**,
   da OPTCG (USD, convertito in EUR con cambio BCE). Aggiornamento giornaliero
-  (non è realtime: i prezzi di mercato cambiano ~una volta al giorno).
+  (non è realtime: i prezzi di mercato cambiano ~una volta al giorno). Vicino a
+  ogni prezzo è mostrata la **data di aggiornamento dichiarata da OPTCG**
+  (`date_scraped`): è una data, non un orario — OPTCG non espone l'ora.
 
 ## Stack
 
@@ -45,6 +51,16 @@ Le carte non si fotografano a mano: si **sfogliano le collezioni ufficiali**
 Le immagini del catalogo sono cross-origin: per usarle come texture WebGL sono
 servite tramite il proxy interno `/api/image-proxy`. Vengono importate solo le
 carte con immagine.
+
+Ogni **stampa** è una carta a sé: l'id catalogo usa `card_image_id` di OPTCG
+(la base coincide col codice carta, le varianti hanno un suffisso `_pN`), mentre
+il codice carta condiviso resta nel campo `number`. Così base e Alternate Art
+convivono come righe separate con prezzo indipendente.
+
+Per ogni prezzo si conservano due date distinte: `price_scraped_at` (la data in
+cui **OPTCG** ha rilevato il prezzo, dal campo `date_scraped` — solo data, senza
+ora) e `price_updated_at` (quando la **nostra app** ha riscaricato il prezzo,
+TTL 24h). Nella UI si mostra la prima.
 
 ## Avvio in sviluppo
 

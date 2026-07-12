@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { RarityChip } from '#/components/rarity-chip'
 import { COLLECTION_LABELS } from '#/features/cards/validation'
-import { formatEur } from '#/lib/format'
+import { formatDateShort, formatEur } from '#/lib/format'
 import type { CardWithPrice } from '#/features/cards/server'
 
 export function CardTile({ card }: { card: CardWithPrice }) {
@@ -47,9 +47,16 @@ export function CardTile({ card }: { card: CardWithPrice }) {
             )}
           </div>
           {card.priceEur !== null && (
-            <p className="font-display text-sm font-bold text-primary">
-              {formatEur(card.priceEur)}
-            </p>
+            <div>
+              <p className="font-display text-sm font-bold text-primary">
+                {formatEur(card.priceEur)}
+              </p>
+              {card.priceScrapedAt && (
+                <p className="text-[0.65rem] leading-tight text-muted-foreground">
+                  agg. {formatDateShort(card.priceScrapedAt)}
+                </p>
+              )}
+            </div>
           )}
         </div>
       </article>

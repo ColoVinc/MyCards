@@ -14,7 +14,7 @@ import {
   SORT_OPTIONS,
   cardFiltersSchema,
 } from '#/features/cards/validation'
-import { formatEur } from '#/lib/format'
+import { formatDate, formatEur } from '#/lib/format'
 import type { CardFilters } from '#/features/cards/validation'
 
 export const Route = createFileRoute('/_authed/dashboard')({
@@ -272,7 +272,11 @@ function CollectionValuePanel() {
         {data.unpricedCards > 0
           ? `${data.unpricedCards} carte senza prezzo disponibile. `
           : ''}
-        Prezzi One Piece da OPTCG · aggiornati una volta al giorno.
+        Prezzi One Piece da OPTCG
+        {data.lastPriceDate
+          ? ` · aggiornati al ${formatDate(data.lastPriceDate)}`
+          : ' · aggiornati una volta al giorno'}
+        .
       </p>
     </div>
   )

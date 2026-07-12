@@ -24,6 +24,8 @@ export interface PricedCard {
   price: number | null
   priceCurrency: string | null
   priceUpdatedAt: Date | null
+  /** Data (YYYY-MM-DD) in cui OPTCG ha rilevato il prezzo. */
+  priceScrapedAt: string | null
 }
 
 function isPriceFresh(updatedAt: Date | null): boolean {
@@ -50,6 +52,7 @@ export async function refreshCatalogCardPrice(card: PricedCard): Promise<void> {
     if (result) {
       card.price = result.price
       card.priceCurrency = result.currency
+      card.priceScrapedAt = result.scrapedAt
     }
     // Anche senza prezzo, segna il tentativo per non riprovare prima del TTL.
     card.priceUpdatedAt = now
@@ -59,6 +62,7 @@ export async function refreshCatalogCardPrice(card: PricedCard): Promise<void> {
         price: card.price,
         priceCurrency: card.priceCurrency,
         priceUpdatedAt: now,
+        priceScrapedAt: card.priceScrapedAt,
       })
       .where(eq(catalogCards.id, card.id))
   } catch {

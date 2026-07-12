@@ -24,12 +24,16 @@ export interface SourceCard {
   color: string | null
   /** Valore di mercato dal listato set (USD), se presente. */
   price: number | null
+  /** Data (YYYY-MM-DD) in cui la fonte ha rilevato il prezzo, se presente. */
+  scrapedAt: string | null
 }
 
 export interface SourcePrice {
   /** Valore di mercato nella valuta nativa della fonte. */
   price: number
   currency: 'EUR' | 'USD'
+  /** Data (YYYY-MM-DD) in cui la fonte ha rilevato il prezzo, se presente. */
+  scrapedAt: string | null
 }
 
 const OPTCG_BASE = 'https://optcgapi.com/api'
@@ -65,6 +69,8 @@ interface OptcgCard {
   card_color: string
   card_image: string
   market_price?: number | string
+  /** Data (YYYY-MM-DD) dell'ultimo scraping del prezzo da parte di OPTCG. */
+  date_scraped?: string
 }
 
 function toPrice(value: number | string | undefined): number | null {
@@ -114,6 +120,7 @@ export async function fetchOnePieceSetCards(
     cardType: card.card_type || null,
     color: card.card_color || null,
     price: toPrice(card.market_price),
+    scrapedAt: card.date_scraped || null,
   }))
 }
 
@@ -130,9 +137,12 @@ export async function fetchOnePieceCardPrice(
     `${OPTCG_BASE}/sets/card/${encodeURIComponent(baseId)}/`,
   )
   const prints = Array.isArray(data) ? data : [data]
-  const card =
-    prints.find((c) => c.card_image_id === printId) ?? prints.at(0)
+  const card = prints.find((c) => c.card_image_id === printId) ?? prints.at(0)
   const value = toPrice(card?.market_price)
   if (value === null) return null
-  return { price: value, currency: 'USD' }
+  return {
+    price: value,
+    currency: 'USD',
+    scrapedAt: card?.date_scraped || null,
+  }
 }
