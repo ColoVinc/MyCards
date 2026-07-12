@@ -10,7 +10,7 @@ export const PRICE_TTL_MS = 24 * 60 * 60 * 1000
 
 const PRICE_SOURCES: Record<
   CatalogGame,
-  (externalId: string) => Promise<SourcePrice | null>
+  (baseId: string, printId: string) => Promise<SourcePrice | null>
 > = {
   onepiece: fetchOnePieceCardPrice,
 }
@@ -19,6 +19,8 @@ const PRICE_SOURCES: Record<
 export interface PricedCard {
   id: string
   game: string
+  /** Codice carta base (card_set_id): l'endpoint prezzo interroga per questo. */
+  number: string | null
   price: number | null
   priceCurrency: string | null
   priceUpdatedAt: Date | null
@@ -38,10 +40,13 @@ export async function refreshCatalogCardPrice(card: PricedCard): Promise<void> {
   if (card.game !== 'onepiece') return
   const source = PRICE_SOURCES[card.game]
 
-  const externalId = card.id.slice(card.game.length + 1)
+  // id = `${game}:${card_image_id}` → printId identifica la stampa; il codice
+  // base (card_set_id) è in `number` e serve per l'URL dell'endpoint prezzo.
+  const printId = card.id.slice(card.game.length + 1)
+  const baseId = card.number ?? printId
   const now = new Date()
   try {
-    const result = await source(externalId)
+    const result = await source(baseId, printId)
     if (result) {
       card.price = result.price
       card.priceCurrency = result.currency

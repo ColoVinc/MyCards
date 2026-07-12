@@ -92,6 +92,7 @@ export const getCardFn = createServerFn({ method: 'GET' })
         card: cards,
         catId: catalogCards.id,
         game: catalogCards.game,
+        number: catalogCards.number,
         price: catalogCards.price,
         priceCurrency: catalogCards.priceCurrency,
         priceUpdatedAt: catalogCards.priceUpdatedAt,
@@ -108,6 +109,7 @@ export const getCardFn = createServerFn({ method: 'GET' })
       const priced = {
         id: row.catId,
         game: row.game,
+        number: row.number,
         price: row.price,
         priceCurrency: row.priceCurrency,
         priceUpdatedAt: row.priceUpdatedAt,

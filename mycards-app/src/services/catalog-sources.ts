@@ -12,13 +12,18 @@ export interface SourceSet {
 }
 
 export interface SourceCard {
+  /** Identificativo unico della STAMPA (card_image_id, es. "EB03-001_p1"). */
   externalId: string
+  /** Codice carta condiviso tra le stampe (card_set_id, es. "EB03-001"). */
+  baseId: string
   name: string
   number: string | null
   rarity: string | null
   imageUrl: string | null
   cardType: string | null
   color: string | null
+  /** Valore di mercato dal listato set (USD), se presente. */
+  price: number | null
 }
 
 export interface SourcePrice {
@@ -51,12 +56,20 @@ interface OptcgSet {
 
 interface OptcgCard {
   card_set_id: string
+  /** Unico per stampa: la base coincide con card_set_id, le alt-art hanno un
+   * suffisso (es. "EB03-001_p1"). */
+  card_image_id: string
   card_name: string
   rarity: string
   card_type: string
   card_color: string
   card_image: string
   market_price?: number | string
+}
+
+function toPrice(value: number | string | undefined): number | null {
+  const n = Number(value)
+  return Number.isFinite(n) && n > 0 ? n : null
 }
 
 const OPTCG_RARITY_LABELS: Record<string, string> = {
@@ -89,25 +102,37 @@ export async function fetchOnePieceSetCards(
     `${OPTCG_BASE}/sets/${encodeURIComponent(externalId)}/`,
   )
   return cards.map((card) => ({
-    externalId: card.card_set_id,
+    // La chiave della carta è la STAMPA (card_image_id): così base e alt-art
+    // diventano righe distinte con immagine e prezzo propri. Il codice carta
+    // (card_set_id) resta in `number`, uguale per tutte le stampe.
+    externalId: card.card_image_id || card.card_set_id,
+    baseId: card.card_set_id,
     name: card.card_name,
     number: card.card_set_id,
     rarity: OPTCG_RARITY_LABELS[card.rarity] ?? card.rarity,
     imageUrl: card.card_image || null,
     cardType: card.card_type || null,
     color: card.card_color || null,
+    price: toPrice(card.market_price),
   }))
 }
 
-/** Prezzo di mercato (USD) della singola carta One Piece da OPTCG. */
+/**
+ * Prezzo di mercato (USD) di una singola STAMPA One Piece da OPTCG.
+ * L'endpoint prende il codice carta base (card_set_id) e restituisce TUTTE le
+ * stampe: si seleziona quella giusta tramite `printId` (card_image_id).
+ */
 export async function fetchOnePieceCardPrice(
-  externalId: string,
+  baseId: string,
+  printId: string,
 ): Promise<SourcePrice | null> {
   const data = await fetchJson<Array<OptcgCard> | OptcgCard>(
-    `${OPTCG_BASE}/sets/card/${encodeURIComponent(externalId)}/`,
+    `${OPTCG_BASE}/sets/card/${encodeURIComponent(baseId)}/`,
   )
-  const card = Array.isArray(data) ? data.at(0) : data
-  const value = Number(card?.market_price)
-  if (!Number.isFinite(value) || value <= 0) return null
+  const prints = Array.isArray(data) ? data : [data]
+  const card =
+    prints.find((c) => c.card_image_id === printId) ?? prints.at(0)
+  const value = toPrice(card?.market_price)
+  if (value === null) return null
   return { price: value, currency: 'USD' }
 }

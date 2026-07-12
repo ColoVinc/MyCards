@@ -294,6 +294,7 @@ export const getCollectionValueFn = createServerFn({ method: 'GET' }).handler(
         quantity: cards.quantity,
         id: catalogCards.id,
         game: catalogCards.game,
+        number: catalogCards.number,
         price: catalogCards.price,
         priceCurrency: catalogCards.priceCurrency,
         priceUpdatedAt: catalogCards.priceUpdatedAt,

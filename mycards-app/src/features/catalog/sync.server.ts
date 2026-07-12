@@ -93,9 +93,10 @@ export async function ensureSetCardsSynced(set: CatalogSet): Promise<void> {
     return
   }
 
-  // Dedup difensivo (alcune sorgenti ripetono la carta in versioni alternative)
-  // e teniamo solo le carte con immagine: senza non sono mostrabili né
-  // visualizzabili in 3D, ed evitano i placeholder "immagine non disponibile".
+  // Dedup difensivo sull'id di STAMPA (card_image_id): base e alt-art hanno id
+  // diversi e restano righe distinte; si scartano solo veri duplicati. Teniamo
+  // solo le carte con immagine: senza non sono mostrabili né visualizzabili in
+  // 3D, ed evitano i placeholder "immagine non disponibile".
   const seen = new Map<string, SourceCard>()
   for (const card of sourceCards) {
     if (card.imageUrl && !seen.has(card.externalId)) {
@@ -118,10 +119,16 @@ export async function ensureSetCardsSynced(set: CatalogSet): Promise<void> {
           imageUrl: card.imageUrl,
           cardType: card.cardType,
           color: card.color,
+          // Il listato set espone già il market_price per ogni stampa: lo
+          // salviamo subito (USD) così ogni carta ha un valore senza attendere
+          // il refresh pigro; il TTL 24h lo terrà poi aggiornato.
+          price: card.price,
+          priceCurrency: card.price !== null ? 'USD' : null,
+          priceUpdatedAt: card.price !== null ? new Date() : null,
         })),
       )
-      // Upsert: aggiorna i campi mutabili così le immagini/nomi aggiunti su
-      // OPTCG dopo la prima sync compaiono al refresh (TTL), niente null fissi.
+      // Upsert: aggiorna i campi mutabili così le immagini/nomi/prezzi aggiunti
+      // su OPTCG dopo la prima sync compaiono al refresh (TTL), niente null fissi.
       .onConflictDoUpdate({
         target: catalogCards.id,
         set: {
@@ -131,6 +138,9 @@ export async function ensureSetCardsSynced(set: CatalogSet): Promise<void> {
           imageUrl: sql`excluded.image_url`,
           cardType: sql`excluded.card_type`,
           color: sql`excluded.color`,
+          price: sql`excluded.price`,
+          priceCurrency: sql`excluded.price_currency`,
+          priceUpdatedAt: sql`excluded.price_updated_at`,
         },
       })
   }
