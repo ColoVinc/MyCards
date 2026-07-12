@@ -14,5 +14,8 @@ dist-ssr
 __unconfig*
 todos.json
 
+# Config locale di Claude Code (launch.json, settings.local.json): non condivisa
+.claude/
+
 # Upload immagini in sviluppo locale (in produzione si usa Vercel Blob)
 public/uploads
