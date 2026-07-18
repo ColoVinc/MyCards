@@ -137,10 +137,35 @@ src/
 npm run build
 ```
 
-1. Crea un progetto Vercel e collega il repository (framework: TanStack Start / Vite).
-2. Crea un database [Neon](https://neon.com) e imposta `DATABASE_URL`.
-3. Applica lo schema: `npm run db:push` (o `db:migrate`).
-4. Imposta `BETTER_AUTH_URL` (URL pubblico) e `BETTER_AUTH_SECRET`.
+Frontend e backend sono **un solo deploy** (TanStack Start è full-stack): il
+database è l'unico servizio esterno.
+
+1. **Importa il repository** su Vercel (framework rilevato: TanStack Start /
+   Vite). **Root Directory: la root del repo** (l'app non è più in una
+   sottocartella).
+2. **Build and Output Settings: lascia i default**, nessun override. L'install
+   funziona grazie al file `.npmrc` (`legacy-peer-deps=true`), necessario perché
+   una dipendenza dichiara un peer di Vite più vecchio: senza, `npm install`
+   fallisce con `ERESOLVE`.
+3. **Crea un database [Neon](https://neon.com) di produzione** (quello di
+   sviluppo di Neon Launchpad è temporaneo) e copia la connection string.
+   Non serve attivare "Neon Auth": l'autenticazione è gestita da Better Auth.
+4. **Imposta le variabili d'ambiente** (Production + Preview):
+   `DATABASE_URL`, `BETTER_AUTH_SECRET`
+   (`npx -y @better-auth/cli secret`) e `BETTER_AUTH_URL`.
+5. **Applica lo schema** al database di produzione:
+   `node scripts/apply-schema.mjs` (oppure `npm run db:push`).
+6. _(Opzionale)_ Popola il catalogo: `npx tsx scripts/sync-catalog.ts`.
+
+> **`BETTER_AUTH_URL` deve combaciare esattamente con l'URL pubblico reale**
+> (con `https://`, senza slash finale). Attenzione: il sottodominio
+> `<progetto>.vercel.app` è globale e **potrebbe essere già occupato da un altro
+> utente** — in quel caso Vercel assegna un URL diverso. Verifica sempre il
+> dominio effettivo in _Project → Domains_, non darlo per scontato dal nome del
+> progetto. Un valore errato rompe login e cookie di sessione.
+
+> Le variabili d'ambiente si applicano **al momento del deploy**: dopo averle
+> aggiunte o modificate serve un **redeploy**.
 
 ## Test e qualità
 
